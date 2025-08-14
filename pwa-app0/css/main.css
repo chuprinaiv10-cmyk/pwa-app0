@@ -33,7 +33,7 @@ header {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Выравниваем элементы по верхнему краю */
     margin-bottom: 20px;
     /* Разрешаем элементам переноситься на новую строку */
     flex-wrap: wrap; 
@@ -46,6 +46,8 @@ header {
 header h1 {
     margin: 0;
     font-size: 1.8rem;
+    /* Убираем отступ, чтобы заголовок был в левом верхнем углу */
+    margin-top: 0.5rem;
 }
 
 /*
@@ -97,7 +99,8 @@ h2 {
     header {
         /* Меняем направление flexbox, чтобы элементы располагались вертикально */
         flex-direction: column;
-        align-items: center;
+        /* Выравниваем все элементы по левому краю */
+        align-items: flex-start;
     }
     header h1 {
         /* Уменьшаем размер заголовка на мобильных устройствах */
@@ -105,13 +108,13 @@ h2 {
         margin-bottom: 10px; /* Добавляем отступ */
     }
     nav {
-        /* Выравниваем кнопки по центру на мобильных устройствах */
-        justify-content: center;
+        /* Выравниваем кнопки по левому краю на мобильных устройствах */
+        justify-content: flex-start;
         width: 100%; /* Занимаем всю доступную ширину */
     }
     nav button {
         /* Добавляем отступы между кнопками на мобильных устройствах */
-        margin: 5px;
+        margin: 5px 15px 5px 0;
     }
     #app {
         padding: 10px;
