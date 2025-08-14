@@ -1,9 +1,9 @@
 {
   "name": "PWA учетная система",
-  "short_name": "PWA v0.1",
+  "short_name": "PWA v0.2",
   "description": "PWA-приложение для учёта",
   "start_url": "index.html",
-  "scope": "/pwa-app0/",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
