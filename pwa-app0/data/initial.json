@@ -1,0 +1,648 @@
+{
+  "settings": {
+    "terminal_name": "Складской терминал 1",
+    "terminal_type": "multi",
+    "users": [
+      {
+        "name": "Пользователь 1",
+        "barcode": "user1-barcode"
+      },
+      {
+        "name": "Пользователь 2",
+        "barcode": "user2-barcode"
+      },
+      {
+        "name": "Пользователь 3",
+        "barcode": "user3-barcode"
+      }
+    ],
+    "current_user_name": "Пользователь 1",
+    "token": "token-1234567890abcdef"
+  },
+  "tables": {
+    "nomen": [
+      {
+        "id": 1,
+        "id-erp": "N-1001",
+        "name": "Процессор Intel Core i7-12700K",
+        "barcode": "10001",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-001",
+            "price": 35000.00,
+            "date-time": "2023-08-15T10:00:00Z"
+          },
+          {
+            "id-erp": "P-002",
+            "price": 34500.00,
+            "date-time": "2023-08-10T15:30:00Z"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "id-erp": "N-1002",
+        "name": "Видеокарта NVIDIA GeForce RTX 3080",
+        "barcode": "10002",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-003",
+            "price": 85000.00,
+            "date-time": "2023-08-15T11:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "id-erp": "N-1003",
+        "name": "Оперативная память Kingston DDR4 16GB",
+        "barcode": "10003",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-004",
+            "price": 6000.00,
+            "date-time": "2023-08-14T09:00:00Z"
+          },
+          {
+            "id-erp": "P-005",
+            "price": 6200.00,
+            "date-time": "2023-08-13T12:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "id-erp": "N-1004",
+        "name": "Материнская плата ASUS PRIME Z690-P",
+        "barcode": "10004",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-006",
+            "price": 22000.00,
+            "date-time": "2023-08-15T12:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "id-erp": "N-1005",
+        "name": "SSD диск Samsung 980 Pro 1TB",
+        "barcode": "10005",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-007",
+            "price": 12500.00,
+            "date-time": "2023-08-15T13:00:00Z"
+          },
+          {
+            "id-erp": "P-008",
+            "price": 12300.00,
+            "date-time": "2023-08-14T14:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "id-erp": "N-1006",
+        "name": "Корпус Cooler Master MasterBox",
+        "barcode": "10006",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-009",
+            "price": 8000.00,
+            "date-time": "2023-08-15T14:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "id-erp": "N-1007",
+        "name": "Блок питания Corsair RM850x",
+        "barcode": "10007",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-010",
+            "price": 11000.00,
+            "date-time": "2023-08-15T15:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "id-erp": "N-1008",
+        "name": "Жидкостное охлаждение Corsair H150i",
+        "barcode": "10008",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-011",
+            "price": 15000.00,
+            "date-time": "2023-08-15T16:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "id-erp": "N-1009",
+        "name": "Вентилятор Noctua NF-A12x25",
+        "barcode": "10009",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-012",
+            "price": 2500.00,
+            "date-time": "2023-08-15T17:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "id-erp": "N-1010",
+        "name": "Монитор Dell S2721QS",
+        "barcode": "10010",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-013",
+            "price": 30000.00,
+            "date-time": "2023-08-15T18:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "id-erp": "N-1011",
+        "name": "Клавиатура Logitech G Pro X",
+        "barcode": "10011",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-014",
+            "price": 10000.00,
+            "date-time": "2023-08-15T19:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "id-erp": "N-1012",
+        "name": "Мышь Razer DeathAdder V2",
+        "barcode": "10012",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-015",
+            "price": 5000.00,
+            "date-time": "2023-08-15T20:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "id-erp": "N-1013",
+        "name": "Web-камера Logitech C920",
+        "barcode": "10013",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-016",
+            "price": 7000.00,
+            "date-time": "2023-08-15T21:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "id-erp": "N-1014",
+        "name": "Микрофон Blue Yeti",
+        "barcode": "10014",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-017",
+            "price": 12000.00,
+            "date-time": "2023-08-15T22:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "id-erp": "N-1015",
+        "name": "Наушники HyperX Cloud II",
+        "barcode": "10015",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-018",
+            "price": 9000.00,
+            "date-time": "2023-08-15T23:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "id-erp": "N-1016",
+        "name": "Сетевая карта TP-Link",
+        "barcode": "10016",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-019",
+            "price": 1500.00,
+            "date-time": "2023-08-16T00:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "id-erp": "N-1017",
+        "name": "Кардридер SanDisk",
+        "barcode": "10017",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-020",
+            "price": 800.00,
+            "date-time": "2023-08-16T01:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "id-erp": "N-1018",
+        "name": "Кабель HDMI v2.1",
+        "barcode": "10018",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-021",
+            "price": 500.00,
+            "date-time": "2023-08-16T02:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 19,
+        "id-erp": "N-1019",
+        "name": "Комплект Wi-Fi адаптеров",
+        "barcode": "10019",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-022",
+            "price": 2500.00,
+            "date-time": "2023-08-16T03:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 20,
+        "id-erp": "N-1020",
+        "name": "USB хаб на 4 порта",
+        "barcode": "10020",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-023",
+            "price": 1200.00,
+            "date-time": "2023-08-16T04:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "id-erp": "N-1021",
+        "name": "Динамики Edifier R1280T",
+        "barcode": "10021",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-024",
+            "price": 6000.00,
+            "date-time": "2023-08-16T05:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "id-erp": "N-1022",
+        "name": "Принтер HP LaserJet Pro",
+        "barcode": "10022",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-025",
+            "price": 18000.00,
+            "date-time": "2023-08-16T06:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 23,
+        "id-erp": "N-1023",
+        "name": "Сканер Epson Perfection",
+        "barcode": "10023",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-026",
+            "price": 10000.00,
+            "date-time": "2023-08-16T07:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "id-erp": "N-1024",
+        "name": "Роутер TP-Link Archer C80",
+        "barcode": "10024",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-027",
+            "price": 4500.00,
+            "date-time": "2023-08-16T08:00:00Z"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "id-erp": "N-1025",
+        "name": "Кронштейн для монитора",
+        "barcode": "10025",
+        "serie": "one",
+        "price": [
+          {
+            "id-erp": "P-028",
+            "price": 3000.00,
+            "date-time": "2023-08-16T09:00:00Z"
+          }
+        ]
+      }
+    ],
+    "stor": [
+      {
+        "id-erp": "S-22",
+        "mnemo": "22",
+        "name": "Склад 22"
+      },
+      {
+        "id-erp": "S-23",
+        "mnemo": "23",
+        "name": "Склад 23"
+      },
+      {
+        "id-erp": "S-24",
+        "mnemo": "24",
+        "name": "Склад 24"
+      },
+      {
+        "id-erp": "S-25",
+        "mnemo": "25",
+        "name": "Склад 25"
+      },
+      {
+        "id-erp": "S-26",
+        "mnemo": "26",
+        "name": "Склад 26"
+      }
+    ],
+    "doc": [
+      {
+        "id-erp": "D-001",
+        "type": "prod",
+        "name": "Производство ПК 1",
+        "date-time": "2023-08-15T10:00:00Z",
+        "consumption": [
+          {
+            "id-nomen": 1,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 2,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 3,
+            "quant_plan": 2,
+            "quant_fact": 0
+          }
+        ],
+        "production": [
+          {
+            "id-nomen": 4,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ]
+      },
+      {
+        "id-erp": "D-002",
+        "type": "prod",
+        "name": "Производство ПК 2",
+        "date-time": "2023-08-15T11:00:00Z",
+        "consumption": [
+          {
+            "id-nomen": 5,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 6,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 7,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ],
+        "production": [
+          {
+            "id-nomen": 8,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 9,
+            "quant_plan": 2,
+            "quant_fact": 0
+          }
+        ]
+      },
+      {
+        "id-erp": "D-003",
+        "type": "prod",
+        "name": "Производство ПК 3",
+        "date-time": "2023-08-15T12:00:00Z",
+        "consumption": [
+          {
+            "id-nomen": 10,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 11,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 12,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ],
+        "production": [
+          {
+            "id-nomen": 13,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ]
+      },
+      {
+        "id-erp": "D-004",
+        "type": "prod",
+        "name": "Производство ПК 4",
+        "date-time": "2023-08-15T13:00:00Z",
+        "consumption": [
+          {
+            "id-nomen": 14,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 15,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 16,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ],
+        "production": [
+          {
+            "id-nomen": 17,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ]
+      },
+      {
+        "id-erp": "D-005",
+        "type": "prod",
+        "name": "Производство ПК 5",
+        "date-time": "2023-08-15T14:00:00Z",
+        "consumption": [
+          {
+            "id-nomen": 18,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 19,
+            "quant_plan": 1,
+            "quant_fact": 0
+          },
+          {
+            "id-nomen": 20,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ],
+        "production": [
+          {
+            "id-nomen": 21,
+            "quant_plan": 1,
+            "quant_fact": 0
+          }
+        ]
+      }
+    ],
+    "exec": [
+      {
+        "doc_id": "D-001",
+        "from_stor_id": "S-22",
+        "to_stor_id": "S-23",
+        "nomen_id": 1,
+        "quant": 1,
+        "serie": "PC_SERIE_1",
+        "user_name": "Пользователь 1",
+        "date-time": "2023-08-15T10:05:00Z"
+      },
+      {
+        "doc_id": "D-001",
+        "from_stor_id": "S-23",
+        "to_stor_id": "S-24",
+        "nomen_id": 2,
+        "quant": 1,
+        "serie": "PC_SERIE_2",
+        "user_name": "Пользователь 2",
+        "date-time": "2023-08-15T10:10:00Z"
+      }
+    ],
+    "stock": [
+      {
+        "stor_id": "S-22",
+        "nomen_id": 1,
+        "quant": 10,
+        "serie": "PC_SERIE_1",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-23",
+        "nomen_id": 2,
+        "quant": 5,
+        "serie": "PC_SERIE_2",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-24",
+        "nomen_id": 3,
+        "quant": 20,
+        "serie": "PC_SERIE_3",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-25",
+        "nomen_id": 4,
+        "quant": 3,
+        "serie": "PC_SERIE_4",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-26",
+        "nomen_id": 5,
+        "quant": 15,
+        "serie": "PC_SERIE_5",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-22",
+        "nomen_id": 6,
+        "quant": 8,
+        "serie": "PC_SERIE_6",
+        "status": "ready"
+      },
+      {
+        "stor_id": "S-23",
+        "nomen_id": 7,
+        "quant": 12,
+        "serie": "PC_SERIE_7",
+        "status": "ready"
+      }
+    ]
+  }
+}
