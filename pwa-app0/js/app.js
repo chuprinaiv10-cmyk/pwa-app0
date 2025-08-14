@@ -102,6 +102,7 @@ const app = new Vue({
 
         /**
          * Инициализирует Tabulator для отображения таблицы документов.
+         * Добавлены настройки для улучшения отображения на мобильных устройствах.
          */
         initTable() {
             // Проверяем, существует ли элемент с ID 'document-table'.
@@ -109,7 +110,12 @@ const app = new Vue({
             if (tableElement) {
                 this.table = new Tabulator(tableElement, {
                     data: this.documents,
-                    layout: "fitColumns",
+                    // Используем "fitData" вместо "fitColumns" для предотвращения изменения ширины колонок.
+                    // Теперь ширина колонок будет определяться на основе данных в них.
+                    layout: "fitData",
+                    // Адаптивный режим: скрывает колонки, которые не помещаются на экране,
+                    // и отображает их по нажатию на "+" в начале строки.
+                    responsiveLayout: "collapse",
                     columns: [
                         {title: "ID", field: "id", width: 50, cellClick: (e, cell) => this.editDocument(cell.getRow().getData())},
                         {title: "Название", field: "name"},
@@ -141,6 +147,8 @@ const app = new Vue({
             } catch (error) {
                 this.message = `Ошибка загрузки файла: ${error.message}`;
                 console.error('Ошибка загрузки начальных данных:', error);
+            } finally {
+                this.loading = false;
             }
         },
         
@@ -203,7 +211,6 @@ const app = new Vue({
         },
 
         /**
-
          * Метод для отображения выбранного справочника.
          * @param {string} dictName - Имя справочника ('nomen', 'stor', 'users').
          */
@@ -226,10 +233,14 @@ const app = new Vue({
                     if (!this.dictionaryTable) {
                         this.dictionaryTable = new Tabulator(tableElement, {
                             data: data,
-                            layout: "fitColumns",
+                            // Используем "fitData" для предотвращения изменения ширины колонок.
+                            layout: "fitData",
+                            // Адаптивный режим: скрывает колонки, которые не помещаются на экране.
+                            responsiveLayout: "collapse",
                             columns: this.dictionaryColumns[dictName],
-                            height: "300px",
-                            // Настройка для фильтрации
+                            // Устанавливаем высоту таблицы, чтобы она была отзывчивой.
+                            height: "100%",
+                            // Настройка для фильтрации в заголовке.
                             headerFilterLiveFilter: true,
                         });
                     } else {
