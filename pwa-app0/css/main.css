@@ -76,6 +76,26 @@ nav button:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+/*
+ * Стили для нового поля ввода штрих-кода
+ */
+#barcode-input {
+    flex-grow: 1; /* Поле будет занимать доступное пространство */
+    margin: 0 20px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    max-width: 250px;
+}
+
+#barcode-input:focus {
+    outline: none; /* Убираем стандартную обводку */
+    border-color: #ffc107; /* Жёлтая рамка при фокусе */
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+
 main {
     background-color: white;
     padding: 20px;
@@ -106,6 +126,10 @@ h2 {
         /* Уменьшаем размер заголовка на мобильных устройствах */
         font-size: 1.4rem;
         margin-bottom: 10px; /* Добавляем отступ */
+    }
+    #barcode-input {
+        width: 100%;
+        margin: 10px 0;
     }
     nav {
         /* Убираем отступ, чтобы кнопки были ближе к заголовку */
