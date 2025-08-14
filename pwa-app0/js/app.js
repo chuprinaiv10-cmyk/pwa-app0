@@ -1,30 +1,77 @@
+// localforage - это библиотека, которая упрощает работу с асинхронным хранилищем в браузере.
+// Она использует IndexedDB, WebSQL или localStorage в зависимости от поддержки браузера.
 localforage.config({ name: 'pwa-db' });
 
+// Основной экземпляр Vue.js приложения.
 const app = new Vue({
+    // Элемент DOM, к которому привязывается Vue.
     el: '#app',
+    
+    // Объект данных, который доступен всем компонентам Vue.
     data: {
-        currentView: 'tasks',
-        documents: [],
-        table: null,
-        apiProductionTasks: '',
-        apiTaskCompletion: '',
-        dbStats: {},
-        // Добавлено поле для хранения значения штрих-кода
-        barcode: '',
+        currentView: 'tasks', // Текущий активный вид приложения. Варианты: 'tasks', 'documents', 'settings'.
+        documents: [], // Массив для хранения данных документов.
+        table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
+        apiProductionTasks: '', // URL для получения производственных задач.
+        apiTaskCompletion: '', // URL для отправки данных о выполнении задач.
+        dbStats: {}, // Статистика по локальной базе данных.
+        barcode: '', // Поле для ввода или сканирования штрих-кода.
+        initialData: null, // Переменная для хранения загруженных начальных данных из JSON.
+        loading: false, // Флаг для отображения индикатора загрузки.
+        message: '' // Сообщение для пользователя.
     },
+    
+    // Хук жизненного цикла Vue. Вызывается после монтирования экземпляра.
     mounted() {
-        // Инициализируем таблицу только после того, как Vue обновит DOM
         this.$nextTick(() => {
-            this.initTable();
-            this.loadData();
-            this.loadSettings();
+            // Инициализация приложения при старте.
+            this.initApp();
         });
     },
+    
+    // Методы, определяющие логику приложения.
     methods: {
+        /**
+         * Основной метод инициализации приложения.
+         * Проверяет наличие данных в локальной БД. Если их нет, пытается загрузить из файла.
+         */
+        async initApp() {
+            this.loading = true;
+            this.message = 'Загрузка приложения...';
+            try {
+                // Проверяем, есть ли какие-либо ключи в LocalForage.
+                const keys = await localforage.keys();
+                if (keys.length === 0) {
+                    console.log('Локальная БД пуста. Попытка загрузить начальные данные из файла.');
+                    await this.loadInitialDataFromFile();
+                } else {
+                    console.log('Локальная БД уже содержит данные.');
+                }
+                
+                // Запускаем инициализацию таблицы и загрузку данных для текущего вида.
+                this.initTable();
+                await this.loadData();
+                await this.loadSettings();
+                
+                // Устанавливаем вид по умолчанию.
+                this.showView('tasks');
+                this.message = 'Готово.';
+            } catch (error) {
+                this.message = `Ошибка инициализации: ${error.message}`;
+                console.error('Ошибка инициализации приложения:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        /**
+         * Инициализирует Tabulator для отображения таблицы документов.
+         */
         initTable() {
-            // Убедитесь, что элемент #document-table существует
-            if (document.getElementById('document-table')) {
-                this.table = new Tabulator("#document-table", {
+            // Проверяем, существует ли элемент с ID 'document-table'.
+            const tableElement = document.getElementById('document-table');
+            if (tableElement) {
+                this.table = new Tabulator(tableElement, {
                     data: this.documents,
                     layout: "fitColumns",
                     columns: [
@@ -35,33 +82,93 @@ const app = new Vue({
                 });
             }
         },
+        
+        /**
+         * Загружает начальные данные из JSON-файла.
+         * Этот метод может быть использован для загрузки как начальных данных, так и данных с сервера.
+         * @param {string} filePath - Путь к JSON-файлу.
+         */
+        async loadInitialDataFromFile(filePath = 'data/initial.json') {
+            try {
+                this.message = 'Загрузка данных из файла...';
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    throw new Error(`Не удалось загрузить файл ${filePath}. Статус: ${response.status}`);
+                }
+                const data = await response.json();
+                this.initialData = data;
+                
+                // Сохраняем данные в локальное хранилище.
+                await this.saveDataToLocalForage(data);
+                this.message = 'Данные успешно загружены и сохранены.';
+                
+            } catch (error) {
+                this.message = `Ошибка загрузки файла: ${error.message}`;
+                console.error('Ошибка загрузки начальных данных:', error);
+            }
+        },
+        
+        /**
+         * Сохраняет данные из JSON-объекта в LocalForage.
+         * @param {object} data - Объект данных в формате JSON.
+         */
+        async saveDataToLocalForage(data) {
+            // Сохраняем настройки
+            if (data.settings) {
+                await localforage.setItem('settings', data.settings);
+            }
+            
+            // Сохраняем каждую таблицу
+            if (data.tables) {
+                for (const tableKey in data.tables) {
+                    if (data.tables.hasOwnProperty(tableKey)) {
+                        await localforage.setItem(tableKey, data.tables[tableKey]);
+                    }
+                }
+            }
+        },
+
+        /**
+         * Загружает данные документов из LocalForage и обновляет таблицу.
+         */
         async loadData() {
-            this.documents = await localforage.getItem('documents') || [];
+            this.documents = await localforage.getItem('doc') || [];
             if (this.documents.length === 0) {
-                // Тестовые данные, если локальная БД пуста
+                 // Загружаем тестовые данные, если документ doc отсутствует
                 this.documents = [
                     { id: 1, name: "Документ 1", date: "2023-01-15" },
                     { id: 2, name: "Документ 2", date: "2023-02-20" },
                     { id: 3, name: "Документ 3", date: "2023-03-10" },
                 ];
-                // Сохраняем тестовые данные в LocalForage
-                await localforage.setItem('documents', this.documents);
             }
             if (this.table) {
                 this.table.replaceData(this.documents);
             }
         },
+        
+        /**
+         * Обработчик клика по документу в таблице.
+         * @param {object} data - Данные выбранного документа.
+         */
         editDocument(data) {
-            // Заменяем alert() на консольный вывод, чтобы избежать блокировки
+            // Используем console.log вместо alert для неблокирующего вывода.
             console.log(`Редактирование документа с ID: ${data.id}`);
-            // Здесь может быть переход на отдельный компонент для редактирования
         },
+
+        /**
+         * Переключает текущий вид приложения.
+         * @param {string} view - Название вида ('tasks', 'documents', 'settings').
+         */
         showView(view) {
             this.currentView = view;
             if (view === 'settings') {
                 this.getDbStats();
             }
         },
+
+        /**
+         * Загружает настройки из LocalForage.
+         */
         async loadSettings() {
             const settings = await localforage.getItem('settings') || {
                 apiProductionTasks: 'https://your-erp.com/api/production-tasks',
@@ -70,6 +177,10 @@ const app = new Vue({
             this.apiProductionTasks = settings.apiProductionTasks;
             this.apiTaskCompletion = settings.apiTaskCompletion;
         },
+
+        /**
+         * Сохраняет настройки в LocalForage.
+         */
         async saveSettings() {
             await localforage.setItem('settings', {
                 apiProductionTasks: this.apiProductionTasks,
@@ -77,6 +188,10 @@ const app = new Vue({
             });
             console.log('Настройки сохранены');
         },
+
+        /**
+         * Собирает статистику по всем таблицам в LocalForage.
+         */
         async getDbStats() {
             const stats = {};
             const keys = await localforage.keys();
@@ -90,7 +205,10 @@ const app = new Vue({
             }
             this.dbStats = stats;
         },
-        // Добавлен новый метод для обработки штрих-кода
+        
+        /**
+         * Обрабатывает введенный штрих-код.
+         */
         processBarcode() {
             if (this.barcode) {
                 console.log(`Обработка штрих-кода: ${this.barcode}`);
