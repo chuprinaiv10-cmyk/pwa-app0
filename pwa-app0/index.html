@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестовая PWA</title>
+    <base href="/pwa-app0/">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/tabulator.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <div id="app">
+        <header>
+            <h1>PWA</h1>
+            <nav>
+                <button @click="showView('tasks')">Задания</button>
+                <button @click="showView('catalogs')">Справочники</button>
+                <button @click="showView('settings')">Настройки</button>
+            </nav>
+        </header>
+
+        <main>
+            <div v-if="currentView === 'tasks'">
+                <h2>Задания</h2>
+                <div id="document-table"></div>
+            </div>
+
+            <div v-if="currentView === 'catalogs'">
+                <h2>Справочники</h2>
+                <ul>
+                    <li>Номенклатура</li>
+                    <li>Пользователи</li>
+                    <li>Служебные</li>
+                </ul>
+            </div>
+            
+            <div v-if="currentView === 'settings'">
+                <h2>Настройки</h2>
+                <label>URL API Заданий:</label>
+                <input type="text" v-model="apiProductionTasks">
+                <br><br>
+                <label>URL API Завершения:</label>
+                <input type="text" v-model="apiTaskCompletion">
+                <br><br>
+                <button @click="saveSettings">Сохранить</button>
+
+                <h3>Текущий пользователь</h3>
+                <p>Тест (Войти / Выйти)</p>
+
+                <h3>Статистика локальной БД</h3>
+                <ul>
+                    <li v-for="(count, table) in dbStats">{{ table }}: {{ count }} записей</li>
+                </ul>
+                <button @click="getDbStats">Обновить статистику</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/lib/vue.min.js"></script>
+    <script src="js/lib/tabulator.min.js"></script>
+    <script src="js/lib/localforage.min.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // ВАЖНО: Регистрация Service Worker должна использовать абсолютный путь
+                // Если этого не сделать, могут возникнуть ошибки
+                navigator.serviceWorker.register('/pwa-app0/service-worker.js');
+            });
+        }
+    </script>
+    <script src="js/app.js"></script>
+</body>
+</html>
