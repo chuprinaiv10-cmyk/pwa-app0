@@ -1,5 +1,6 @@
-// Импортируем скрипт Workbox из локальной папки /pwa-app0/js/lib/
-importScripts('/pwa-app0/js/lib/workbox-sw.js');
+// Импортируем скрипт Workbox из локальной папки js/lib/
+// Путь изменён на относительный
+importScripts('js/lib/workbox-sw.js');
 
 if (workbox) {
   console.log('Workbox успешно загружен!');
@@ -9,20 +10,21 @@ if (workbox) {
   workbox.core.clientsClaim();
 
   // Стратегия кэширования для статических файлов (CSS, JS, иконки).
-  // Все пути здесь должны начинаться с /pwa-app0/, чтобы соответствовать расположению на сервере.
+  // Все пути изменены на относительные, чтобы корректно работать
+  // из базовой директории Netlify.
   workbox.precaching.precacheAndRoute([
-    { url: '/pwa-app0/index.html', revision: '2' },
-    { url: '/pwa-app0/manifest.json', revision: '1' },
-    { url: '/pwa-app0/service-worker.js', revision: '1' },
-    { url: '/pwa-app0/css/main.css', revision: '1' },
-    { url: '/pwa-app0/css/tabulator.min.css', revision: '1' },
-    { url: '/pwa-app0/js/app.js', revision: '4' },
-    { url: '/pwa-app0/js/lib/vue.min.js', revision: '1' },
-    { url: '/pwa-app0/js/lib/tabulator.min.js', revision: '1' },
-    { url: '/pwa-app0/js/lib/localforage.min.js', revision: '1' },
-    { url: '/pwa-app0/js/lib/workbox-sw.js', revision: '1' },
-    { url: '/pwa-app0/icons/icon-192x192.png', revision: '1' },
-    { url: '/pwa-app0/icons/icon-512x512.png', revision: '1' },
+    { url: 'index.html', revision: '1' },
+    { url: 'manifest.json', revision: '1' },
+    { url: 'service-worker.js', revision: '1' },
+    { url: 'css/main.css', revision: '1' },
+    { url: 'css/tabulator.min.css', revision: '1' },
+    { url: 'js/app.js', revision: '1' },
+    { url: 'js/lib/vue.min.js', revision: '1' },
+    { url: 'js/lib/tabulator.min.js', revision: '1' },
+    { url: 'js/lib/localforage.min.js', revision: '1' },
+    { url: 'js/lib/workbox-sw.js', revision: '1' },
+    { url: 'icons/icon-192x192.png', revision: '1' },
+    { url: 'icons/icon-512x512.png', revision: '1' },
   ]);
 
   // Стратегия для навигации: NetworkFirst (Сеть в первую очередь)
@@ -36,18 +38,17 @@ if (workbox) {
 
   // Стратегия для всех остальных запросов: CacheFirst (Кэш в первую очередь)
   workbox.routing.registerRoute(
-    new RegExp('.*'),
-    new workbox.strategies.CacheFirst({
-      cacheName: 'pwa-cache',
-      plugins: [
-        new workbox.expiration.ExpirationPlugin({
-          maxEntries: 50,
-          maxAgeSeconds: 30 * 24 * 60 * 60,
-        }),
-      ],
-    })
+      new RegExp('.*\.(?:png|gif|jpg|jpeg|svg)$'),
+      new workbox.strategies.CacheFirst({
+        cacheName: 'images',
+        plugins: [
+          new workbox.expiration.ExpirationPlugin({
+            maxEntries: 60,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 дней
+          }),
+        ],
+      })
   );
-
 } else {
   console.log('Workbox не удалось загрузить.');
 }
