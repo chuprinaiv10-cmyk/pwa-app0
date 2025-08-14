@@ -9,7 +9,7 @@ const app = new Vue({
     
     // Объект данных, который доступен всем компонентам Vue.
     data: {
-        currentView: 'tasks', // Текущий активный вид приложения. Варианты: 'tasks', 'documents', 'settings'.
+        currentView: 'tasks', // Текущий активный вид приложения. Варианты: 'tasks', 'documents', 'settings', 'dictionarys'.
         documents: [], // Массив для хранения данных документов.
         table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
         apiProductionTasks: '', // URL для получения производственных задач.
@@ -18,9 +18,36 @@ const app = new Vue({
         barcode: '', // Поле для ввода или сканирования штрих-кода.
         initialData: null, // Переменная для хранения загруженных начальных данных из JSON.
         loading: false, // Флаг для отображения индикатора загрузки.
-        message: '' // Сообщение для пользователя.
+        message: '', // Сообщение для пользователя.
+        currentDictionary: null, // Текущий выбранный справочник ('nomen', 'stor', 'users').
+        dictionaryTable: null, // Экземпляр Tabulator для справочников.
+        // Заголовки для справочников для отображения в интерфейсе
+        dictionaryTitles: {
+            nomen: 'Номенклатура',
+            stor: 'Склады',
+            users: 'Пользователи'
+        },
+        // Определение колонок для каждого справочника
+        dictionaryColumns: {
+            nomen: [
+                {title: "ID", field: "id"},
+                {title: "ID-ERP", field: "id-erp"},
+                {title: "Название", field: "name", widthGrow: 2},
+                {title: "Штрих-код", field: "barcode"},
+                {title: "Серия", field: "serie"}
+            ],
+            stor: [
+                {title: "ID-ERP", field: "id-erp"},
+                {title: "Мнемоника", field: "mnemo"},
+                {title: "Название", field: "name", widthGrow: 2}
+            ],
+            users: [
+                {title: "Имя", field: "name", widthGrow: 2},
+                {title: "Штрих-код", field: "barcode"}
+            ]
+        }
     },
-    
+
     // Хук жизненного цикла Vue. Вызывается после монтирования экземпляра.
     mounted() {
         this.$nextTick(() => {
@@ -28,7 +55,16 @@ const app = new Vue({
             this.initApp();
         });
     },
-    
+
+    watch: {
+        // Следим за изменением выбранного справочника
+        currentDictionary(newDictionary) {
+            if (newDictionary) {
+                this.loadDictionaryData(newDictionary);
+            }
+        }
+    },
+
     // Методы, определяющие логику приложения.
     methods: {
         /**
@@ -66,6 +102,7 @@ const app = new Vue({
 
         /**
          * Инициализирует Tabulator для отображения таблицы документов.
+         * Добавлены настройки для улучшения отображения на мобильных устройствах.
          */
         initTable() {
             // Проверяем, существует ли элемент с ID 'document-table'.
@@ -73,7 +110,12 @@ const app = new Vue({
             if (tableElement) {
                 this.table = new Tabulator(tableElement, {
                     data: this.documents,
-                    layout: "fitColumns",
+                    // Используем "fitData" вместо "fitColumns" для предотвращения изменения ширины колонок.
+                    // Теперь ширина колонок будет определяться на основе данных в них.
+                    layout: "fitData",
+                    // Адаптивный режим: скрывает колонки, которые не помещаются на экране,
+                    // и отображает их по нажатию на "+" в начале строки.
+                    responsiveLayout: "collapse",
                     columns: [
                         {title: "ID", field: "id", width: 50, cellClick: (e, cell) => this.editDocument(cell.getRow().getData())},
                         {title: "Название", field: "name"},
@@ -105,6 +147,8 @@ const app = new Vue({
             } catch (error) {
                 this.message = `Ошибка загрузки файла: ${error.message}`;
                 console.error('Ошибка загрузки начальных данных:', error);
+            } finally {
+                this.loading = false;
             }
         },
         
@@ -157,12 +201,60 @@ const app = new Vue({
 
         /**
          * Переключает текущий вид приложения.
-         * @param {string} view - Название вида ('tasks', 'documents', 'settings').
+         * @param {string} view - Название вида ('tasks', 'documents', 'settings', 'dictionarys').
          */
         showView(view) {
             this.currentView = view;
             if (view === 'settings') {
                 this.getDbStats();
+            }
+        },
+
+        /**
+         * Метод для отображения выбранного справочника.
+         * @param {string} dictName - Имя справочника ('nomen', 'stor', 'users').
+         */
+        showDictionary(dictName) {
+            this.currentDictionary = dictName;
+        },
+
+        /**
+         * Загружает данные для выбранного справочника и отображает их в таблице.
+         * @param {string} dictName - Имя справочника.
+         */
+        async loadDictionaryData(dictName) {
+            this.loading = true;
+            this.message = `Загрузка данных справочника "${this.dictionaryTitles[dictName]}"...`;
+            try {
+                const data = await localforage.getItem(dictName) || [];
+                const tableElement = document.getElementById('dictionary-table');
+                if (tableElement) {
+                    // Инициализируем Tabulator, если еще не создан, или обновляем данные
+                    if (!this.dictionaryTable) {
+                        this.dictionaryTable = new Tabulator(tableElement, {
+                            data: data,
+                            // Используем "fitData" для предотвращения изменения ширины колонок.
+                            layout: "fitData",
+                            // Адаптивный режим: скрывает колонки, которые не помещаются на экране.
+                            responsiveLayout: "collapse",
+                            columns: this.dictionaryColumns[dictName],
+                            // Устанавливаем высоту таблицы, чтобы она была отзывчивой.
+                            height: "100%",
+                            // Настройка для фильтрации в заголовке.
+                            headerFilterLiveFilter: true,
+                        });
+                    } else {
+                        // Обновляем данные и колонки
+                        this.dictionaryTable.setColumns(this.dictionaryColumns[dictName]);
+                        this.dictionaryTable.replaceData(data);
+                    }
+                }
+                this.message = 'Готово.';
+            } catch (error) {
+                this.message = `Ошибка загрузки справочника: ${error.message}`;
+                console.error('Ошибка загрузки справочника:', error);
+            } finally {
+                this.loading = false;
             }
         },
 

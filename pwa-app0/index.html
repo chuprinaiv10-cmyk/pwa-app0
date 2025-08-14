@@ -15,23 +15,19 @@
     <div id="app">
         <header>
             <h1>PWA</h1>
-            <!-- Добавлено поле для ввода штрих-кода -->
-            <input 
-                type="text" 
-                id="barcode-input" 
-                placeholder="Штрих-код"
-                v-model="barcode"
-                @keyup.enter="processBarcode"
-            >
             <nav>
                 <button @click="showView('tasks')">Задачи</button>
                 <button @click="showView('documents')">Документы</button>
-<button @click="showView('dictionarys')">Справочники</button>
+                <button @click="showView('dictionarys')">Справочники</button>
                 <button @click="showView('settings')">Настройки</button>
             </nav>
         </header>
 
         <main>
+            <div v-if="loading" class="loading-overlay">
+                <p>{{ message }}</p>
+            </div>
+
             <div v-if="currentView === 'tasks'">
                 <h2>Задачи</h2>
                 <!-- Содержимое для раздела "Задачи" -->
@@ -43,10 +39,23 @@
                 <h2>Документы</h2>
                 <div id="document-table"></div>
             </div>
+            
+            <div v-if="currentView === 'dictionarys'">
+                <h2>Справочники</h2>
+                <ul v-if="!currentDictionary" class="dictionary-list">
+                    <li><button @click="showDictionary('nomen')">Номенклатура</button></li>
+                    <li><button @click="showDictionary('stor')">Склады</button></li>
+                    <li><button @click="showDictionary('users')">Пользователи</button></li>
+                </ul>
+                <div v-else>
+                    <h3>{{ dictionaryTitles[currentDictionary] }}</h3>
+                    <div id="dictionary-table"></div>
+                    <button @click="currentDictionary = null">Назад к списку</button>
+                </div>
+            </div>
 
             <div v-if="currentView === 'settings'">
                 <h2>Настройки</h2>
-                <p>Настройки API и базы данных.</p>
                 <label for="api-tasks">API Production Tasks:</label>
                 <input type="url" id="api-tasks" v-model="apiProductionTasks">
                 <br>
