@@ -10,6 +10,63 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/tabulator.min.css">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        /* Стили для новой простой таблицы, удобные для мобильных устройств */
+        .simple-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .simple-table th, .simple-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .simple-table th {
+            background-color: #f4f4f9;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 600px) {
+            .simple-table thead {
+                display: none; /* Скрываем заголовок таблицы на маленьких экранах */
+            }
+
+            .simple-table, .simple-table tbody, .simple-table tr, .simple-table td {
+                display: block; /* Отображаем все элементы как блоки */
+                width: 100%;
+            }
+
+            .simple-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .simple-table td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            /* Добавляем заголовок колонки как псевдоэлемент */
+            .simple-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+                color: #555;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -18,39 +75,52 @@
             <nav>
                 <button @click="showView('tasks')">Задачи</button>
                 <button @click="showView('documents')">Документы</button>
-                <button @click="showView('dictionarys')">Справочники</button>
+<button @click="showView('dictionarys')">Справочники</button>
                 <button @click="showView('settings')">Настройки</button>
             </nav>
         </header>
 
         <main>
-            <div v-if="loading" class="loading-overlay">
-                <p>{{ message }}</p>
-            </div>
-
             <div v-if="currentView === 'tasks'">
                 <h2>Задачи</h2>
                 <!-- Содержимое для раздела "Задачи" -->
                 <p>Здесь будут отображаться производственные задачи.</p>
                 <button @click="loadData">Загрузить данные</button>
+                <!-- Добавлено поле для ввода штрих-кода -->
+                <br><br>
+                <label for="barcode">Штрих-код:</label>
+                <input type="text" id="barcode" v-model="barcode" @keyup.enter="processBarcode" placeholder="Сканируйте штрих-код">
+                <button @click="processBarcode">Обработать</button>
             </div>
 
             <div v-if="currentView === 'documents'">
                 <h2>Документы</h2>
                 <div id="document-table"></div>
             </div>
-            
+
             <div v-if="currentView === 'dictionarys'">
                 <h2>Справочники</h2>
-                <ul v-if="!currentDictionary" class="dictionary-list">
-                    <li><button @click="showDictionary('nomen')">Номенклатура</button></li>
-                    <li><button @click="showDictionary('stor')">Склады</button></li>
-                    <li><button @click="showDictionary('users')">Пользователи</button></li>
-                </ul>
-                <div v-else>
-                    <h3>{{ dictionaryTitles[currentDictionary] }}</h3>
-                    <div id="dictionary-table"></div>
-                    <button @click="currentDictionary = null">Назад к списку</button>
+                <nav class="sub-nav">
+                    <button @click="showDictionary('nomen')">Номенклатура</button>
+                    <button @click="showDictionary('stor')">Склады</button>
+                    <button @click="showDictionary('users')">Пользователи</button>
+                </nav>
+                <!-- Блок с таблицей, отображаемый только после выбора справочника -->
+                <div v-if="currentDictionary" class="table-container">
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th v-for="col in dictionaryColumns[currentDictionary]">{{ col.title }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in dictionaryData">
+                                <td v-for="col in dictionaryColumns[currentDictionary]" :data-label="col.title">
+                                    {{ item[col.field] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

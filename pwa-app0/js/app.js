@@ -20,7 +20,7 @@ const app = new Vue({
         loading: false, // Флаг для отображения индикатора загрузки.
         message: '', // Сообщение для пользователя.
         currentDictionary: null, // Текущий выбранный справочник ('nomen', 'stor', 'users').
-        dictionaryTable: null, // Экземпляр Tabulator для справочников.
+        dictionaryData: [], // Массив для хранения данных текущего справочника.
         // Заголовки для справочников для отображения в интерфейсе
         dictionaryTitles: {
             nomen: 'Номенклатура',
@@ -30,20 +30,20 @@ const app = new Vue({
         // Определение колонок для каждого справочника
         dictionaryColumns: {
             nomen: [
-                {title: "ID", field: "id"},
-                {title: "ID-ERP", field: "id-erp"},
-                {title: "Название", field: "name", widthGrow: 2},
-                {title: "Штрих-код", field: "barcode"},
-                {title: "Серия", field: "serie"}
+                {field: "id", title: "ID"},
+                {field: "id-erp", title: "ID-ERP"},
+                {field: "name", title: "Название"},
+                {field: "barcode", title: "Штрих-код"},
+                {field: "serie", title: "Серия"}
             ],
             stor: [
-                {title: "ID-ERP", field: "id-erp"},
-                {title: "Мнемоника", field: "mnemo"},
-                {title: "Название", field: "name", widthGrow: 2}
+                {field: "id-erp", title: "ID-ERP"},
+                {field: "mnemo", title: "Мнемоника"},
+                {field: "name", title: "Название"}
             ],
             users: [
-                {title: "Имя", field: "name", widthGrow: 2},
-                {title: "Штрих-код", field: "barcode"}
+                {field: "name", title: "Имя"},
+                {field: "barcode", title: "Штрих-код"}
             ]
         }
     },
@@ -220,34 +220,19 @@ const app = new Vue({
 
         /**
          * Загружает данные для выбранного справочника и отображает их в таблице.
+         * Теперь используется простая HTML-таблица, а не Tabulator.
          * @param {string} dictName - Имя справочника.
          */
         async loadDictionaryData(dictName) {
             this.loading = true;
             this.message = `Загрузка данных справочника "${this.dictionaryTitles[dictName]}"...`;
             try {
-                const data = await localforage.getItem(dictName) || [];
-                const tableElement = document.getElementById('dictionary-table');
-                if (tableElement) {
-                    // Инициализируем Tabulator, если еще не создан, или обновляем данные
-                    if (!this.dictionaryTable) {
-                        this.dictionaryTable = new Tabulator(tableElement, {
-                            data: data,
-                            // Используем "fitData" для предотвращения изменения ширины колонок.
-                            layout: "fitData",
-                            // Адаптивный режим: скрывает колонки, которые не помещаются на экране.
-                            responsiveLayout: "collapse",
-                            columns: this.dictionaryColumns[dictName],
-                            // Устанавливаем высоту таблицы, чтобы она была отзывчивой.
-                            height: "100%",
-                            // Настройка для фильтрации в заголовке.
-                            headerFilterLiveFilter: true,
-                        });
-                    } else {
-                        // Обновляем данные и колонки
-                        this.dictionaryTable.setColumns(this.dictionaryColumns[dictName]);
-                        this.dictionaryTable.replaceData(data);
-                    }
+                // Получаем данные из LocalForage
+                this.dictionaryData = await localforage.getItem(dictName) || [];
+                // Убираем старую таблицу Tabulator, так как она больше не нужна
+                if (this.dictionaryTable) {
+                    this.dictionaryTable.destroy();
+                    this.dictionaryTable = null;
                 }
                 this.message = 'Готово.';
             } catch (error) {
