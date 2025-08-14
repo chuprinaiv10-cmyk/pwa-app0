@@ -203,6 +203,7 @@ const app = new Vue({
         },
 
         /**
+
          * Метод для отображения выбранного справочника.
          * @param {string} dictName - Имя справочника ('nomen', 'stor', 'users').
          */
