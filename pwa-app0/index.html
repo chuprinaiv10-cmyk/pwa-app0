@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PWA</title>
-    <!-- Изменённый путь к манифесту -->
     <link rel="manifest" href="manifest.json">
-    <!-- Изменённые пути к CSS -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/tabulator.min.css">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
-        /* Стили для новой простой таблицы, удобные для мобильных устройств */
+        /* Общие стили для простых таблиц */
         .simple-table {
             width: 100%;
             border-collapse: collapse;
@@ -22,6 +20,7 @@
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            cursor: pointer;
         }
 
         .simple-table th {
@@ -33,11 +32,11 @@
         /* Адаптивные стили для мобильных устройств */
         @media (max-width: 600px) {
             .simple-table thead {
-                display: none; /* Скрываем заголовок таблицы на маленьких экранах */
+                display: none;
             }
 
             .simple-table, .simple-table tbody, .simple-table tr, .simple-table td {
-                display: block; /* Отображаем все элементы как блоки */
+                display: block;
                 width: 100%;
             }
 
@@ -54,7 +53,6 @@
                 position: relative;
             }
 
-            /* Добавляем заголовок колонки как псевдоэлемент */
             .simple-table td:before {
                 content: attr(data-label);
                 position: absolute;
@@ -66,6 +64,48 @@
                 color: #555;
             }
         }
+        
+        /* Стили для всплывающих уведомлений (toast) */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Стили для модальных окон */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
     </style>
 </head>
 <body>
@@ -73,31 +113,100 @@
         <header>
             <h1>PWA</h1>
             <nav>
-                <button @click="showView('tasks')">Задачи</button>
-                <button @click="showView('documents')">Документы</button>
-<button @click="showView('dictionarys')">Справочники</button>
+                <button @click="showView('doclist')">Документы</button>
+                <button @click="showView('registers')">Журналы</button>
+                <button @click="showView('dictionarys')">Справочники</button>
                 <button @click="showView('settings')">Настройки</button>
+                <button @click="showView('tasks')">Задачи</button>
             </nav>
         </header>
 
         <main>
-            <div v-if="currentView === 'tasks'">
-                <h2>Задачи</h2>
-                <!-- Содержимое для раздела "Задачи" -->
-                <p>Здесь будут отображаться производственные задачи.</p>
-                <button @click="loadData">Загрузить данные</button>
-                <!-- Добавлено поле для ввода штрих-кода -->
-                <br><br>
-                <label for="barcode">Штрих-код:</label>
-                <input type="text" id="barcode" v-model="barcode" @keyup.enter="processBarcode" placeholder="Сканируйте штрих-код">
-                <button @click="processBarcode">Обработать</button>
+            <!-- Блок для отображения всплывающих уведомлений -->
+            <div v-if="toastMessage" class="toast" :class="{ show: toastMessage }">{{ toastMessage }}</div>
+            
+            <!-- Модальное окно -->
+            <div v-if="showModal" class="modal" @click.self="showModal = false">
+                <div class="modal-content">
+                    <p>{{ modalMessage }}</p>
+                    <div class="modal-buttons">
+                        <button v-if="modalType === 'confirm'" @click="modalCallback(true)">Да</button>
+                        <button v-if="modalType === 'confirm'" @click="modalCallback(false)">Нет</button>
+                        <button v-else @click="modalCallback(true)">ОК</button>
+                    </div>
+                </div>
             </div>
 
-            <div v-if="currentView === 'documents'">
+            <!-- Вид: Список документов -->
+            <div v-if="currentView === 'doclist'">
                 <h2>Документы</h2>
-                <div id="document-table"></div>
+                <div v-for="(docs, type) in groupedDocuments" :key="type">
+                    <h3>{{ docTypeTitles[type] || type }}</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th v-for="col in docListColumns[type]" :key="col.field">{{ col.title }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="doc in docs" :key="doc.id" @click="editDocument(doc)">
+                                <td v-for="col in docListColumns[type]" :key="col.field" :data-label="col.title">
+                                    {{ doc[col.field] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Вид: Документ (редактирование) -->
+            <div v-if="currentView === 'docedit'">
+                <h2>Документ: {{ currentDoc.name }}</h2>
+                <!-- Таблицы для разделов документа -->
+                <div v-for="(table, key) in currentDoc.tables" :key="key">
+                    <h3>{{ table.title }}</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th v-for="col in table.columns" :key="col.field">{{ col.title }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in table.data" :key="item.id">
+                                <td v-for="col in table.columns" :key="col.field" :data-label="col.title">
+                                    {{ item[col.field] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button @click="createOperation">Создать операцию</button>
+            </div>
+            
+            <!-- Вид: Журналы -->
+            <div v-if="currentView === 'registers'">
+                <h2>Журналы операций</h2>
+                <div v-if="currentRegister">
+                    <h3>{{ currentRegister.title }}</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th v-for="col in currentRegister.columns" :key="col.field">{{ col.title }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in currentRegister.data" :key="item.id">
+                                <td v-for="col in currentRegister.columns" :key="col.field" :data-label="col.title">
+                                    {{ item[col.field] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button @click="showOperationForm">Создать операцию</button>
             </div>
 
+            <!-- Вид: Справочники -->
             <div v-if="currentView === 'dictionarys'">
                 <h2>Справочники</h2>
                 <nav class="sub-nav">
@@ -105,7 +214,6 @@
                     <button @click="showDictionary('stor')">Склады</button>
                     <button @click="showDictionary('users')">Пользователи</button>
                 </nav>
-                <!-- Блок с таблицей, отображаемый только после выбора справочника -->
                 <div v-if="currentDictionary" class="table-container">
                     <table class="simple-table">
                         <thead>
@@ -124,6 +232,7 @@
                 </div>
             </div>
 
+            <!-- Вид: Настройки -->
             <div v-if="currentView === 'settings'">
                 <h2>Настройки</h2>
                 <label for="api-tasks">API Production Tasks:</label>
@@ -141,10 +250,20 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Вид: Задачи -->
+            <div v-if="currentView === 'tasks'">
+                <h2>Задачи</h2>
+                <p>Здесь будут отображаться производственные задачи.</p>
+                <button @click="loadData">Загрузить данные</button>
+                <br><br>
+                <label for="barcode">Штрих-код:</label>
+                <input type="text" id="barcode" v-model="barcode" @keyup.enter="processBarcode" placeholder="Сканируйте штрих-код">
+                <button @click="processBarcode">Обработать</button>
+            </div>
         </main>
     </div>
 
-    <!-- Регистрация сервис-воркера -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -159,7 +278,6 @@
         }
     </script>
     
-    <!-- Изменённые пути к JS-библиотекам и приложению -->
     <script src="js/lib/vue.min.js"></script>
     <script src="js/lib/tabulator.min.js"></script>
     <script src="js/lib/localforage.min.js"></script>
