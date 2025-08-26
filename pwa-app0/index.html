@@ -9,6 +9,25 @@
     <link rel="stylesheet" href="css/tabulator.min.css">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
+        /*
+         * Стили для поля ввода штрих-кода
+        */
+        #barcode-input {
+        flex-grow: 1; /* Поле будет занимать доступное пространство */
+            margin: 0 20px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            max-width: 250px;
+        }
+
+        #barcode-input:focus {
+            outline: none; /* Убираем стандартную обводку */
+            border-color: #ffc107; /* Жёлтая рамка при фокусе */
+            box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+        }
+        
         /* Общие стили для простых таблиц */
         .simple-table {
             width: 100%;
@@ -112,6 +131,14 @@
     <div id="app">
         <header>
             <h1>PWA</h1>
+            <!-- Поле для ввода штрих-кода и в дальнейшем глобального поиска -->
+            <input 
+                type="text" 
+                id="barcode-input" 
+                placeholder="Штрих-код"
+                v-model="barcode"
+                @keyup.enter="processBarcode"
+            >
             <nav>
                 <button @click="showView('doclist')">Документы</button>
                 <button @click="showView('registers')">Журналы</button>
@@ -256,10 +283,6 @@
                 <h2>Задачи</h2>
                 <p>Здесь будут отображаться производственные задачи.</p>
                 <button @click="loadData">Загрузить данные</button>
-                <br><br>
-                <label for="barcode">Штрих-код:</label>
-                <input type="text" id="barcode" v-model="barcode" @keyup.enter="processBarcode" placeholder="Сканируйте штрих-код">
-                <button @click="processBarcode">Обработать</button>
             </div>
         </main>
     </div>
