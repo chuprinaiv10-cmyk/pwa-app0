@@ -167,46 +167,72 @@
             <!-- Вид: Список документов -->
             <div v-if="currentView === 'doclist'">
                 <h2>Документы</h2>
-                <div v-for="(docs, type) in groupedDocuments" :key="type">
-                    <h3>{{ docTypeTitles[type] || type }}</h3>
-                    <table class="simple-table">
-                        <thead>
-                            <tr>
-                                <th v-for="col in docListColumns[type]" :key="col.field">{{ col.title }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="doc in docs" :key="doc.id" @click="editDocument(doc)">
-                                <td v-for="col in docListColumns[type]" :key="col.field" :data-label="col.title">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th v-for="col in docListColumns" :key="col.field">{{ col.title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="doc in documents" :key="doc['id-erp']" @click="editDocument(doc)">
+                            <td v-for="col in docListColumns" :key="col.field" :data-label="col.title">
+                                <!-- Выводим количество элементов для consumption и production -->
+                                <template v-if="col.field === 'consumption_count'">
+                                    {{ doc.consumption.length }}
+                                </template>
+                                <template v-else-if="col.field === 'production_count'">
+                                    {{ doc.production.length }}
+                                </template>
+                                <!-- Для остальных полей выводим значение напрямую -->
+                                <template v-else>
                                     {{ doc[col.field] }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </template>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             
             <!-- Вид: Документ (редактирование) -->
             <div v-if="currentView === 'docedit'">
-                <h2>Документ: {{ currentDoc.name }}</h2>
+                <h2>Документ: {{ currentDoc['name'] }}</h2>
                 <!-- Таблицы для разделов документа -->
-                <div v-for="(table, key) in currentDoc.tables" :key="key">
-                    <h3>{{ table.title }}</h3>
-                    <table class="simple-table">
-                        <thead>
-                            <tr>
-                                <th v-for="col in table.columns" :key="col.field">{{ col.title }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in table.data" :key="item.id">
-                                <td v-for="col in table.columns" :key="col.field" :data-label="col.title">
-                                    {{ item[col.field] }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <h3>Потребление</h3>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>ID Номенклатуры</th>
+                            <th>План</th>
+                            <th>Факт</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in currentDoc.consumption" :key="item['id-nomen']">
+                            <td>{{ item['id-nomen'] }}</td>
+                            <td>{{ item.quant_plan }}</td>
+                            <td>{{ item.quant_fact }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Производство</h3>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>ID Номенклатуры</th>
+                            <th>План</th>
+                            <th>Факт</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in currentDoc.production" :key="item['id-nomen']">
+                            <td>{{ item['id-nomen'] }}</td>
+                            <td>{{ item.quant_plan }}</td>
+                            <td>{{ item.quant_fact }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button @click="showView('doclist')">Вернуться к списку</button>
                 <button @click="createOperation">Создать операцию</button>
             </div>
             
