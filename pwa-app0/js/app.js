@@ -266,6 +266,7 @@ const app = new Vue({
             // Заглушка
             console.log(`Нажата кнопка Создания операции`);
             //this.showView('docedit');
+            this.showToast('Создание операции');
             
         },
         
