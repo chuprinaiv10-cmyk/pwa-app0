@@ -202,6 +202,7 @@
                     <thead>
                         <tr>
                             <th>ID Номенклатуры</th>
+                            <th>Номенклатура</th>
                             <th>План</th>
                             <th>Факт</th>
                         </tr>
@@ -209,6 +210,7 @@
                     <tbody>
                         <tr v-for="item in currentDoc.consumption" :key="item['id-nomen']">
                             <td>{{ item['id-nomen'] }}</td>
+                            <td>{{ nomenclaturesById[item['id-nomen']] }}</td>
                             <td>{{ item.quant_plan }}</td>
                             <td>{{ item.quant_fact }}</td>
                         </tr>
@@ -220,6 +222,7 @@
                     <thead>
                         <tr>
                             <th>ID Номенклатуры</th>
+                            <th>Номенклатура</th>
                             <th>План</th>
                             <th>Факт</th>
                         </tr>
@@ -227,6 +230,7 @@
                     <tbody>
                         <tr v-for="item in currentDoc.production" :key="item['id-nomen']">
                             <td>{{ item['id-nomen'] }}</td>
+                            <td>{{ nomenclaturesById[item['id-nomen']] }}</td>
                             <td>{{ item.quant_plan }}</td>
                             <td>{{ item.quant_fact }}</td>
                         </tr>
