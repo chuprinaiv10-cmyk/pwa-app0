@@ -226,6 +226,17 @@ const app = new Vue({
         },
 
         /**
+         * Обработчик клика по кнопке "создать операцию".
+         * @param {object} data - Данные выбранного документа.
+         */
+        createOperation () {
+            // Заглушка
+            console.log(`Нажата кнопка Создания операции`);
+            //this.showView('docedit');
+            
+        },
+        
+        /**
          * Переключает текущий вид приложения.
          * @param {string} view - Название вида ('tasks', 'documents', 'settings', 'dictionarys').
          */
