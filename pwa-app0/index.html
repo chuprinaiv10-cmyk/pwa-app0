@@ -208,9 +208,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in currentDoc.consumption" :key="item['id-nomen']">
-                            <td>{{ item['id-nomen'] }}</td>
-                            <td>{{ nomenclaturesById[item['id-nomen']] }}</td>
+                        <tr v-for="item in currentDoc.consumption" :key="item['id-erp']">
+                            <td>{{ item['id-erp'] }}</td>
+                            <td>{{ nomenclaturesById[item['id-erp']] }}</td>
                             <td>{{ item.quant_plan }}</td>
                             <td>{{ item.quant_fact }}</td>
                         </tr>
@@ -228,9 +228,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in currentDoc.production" :key="item['id-nomen']">
-                            <td>{{ item['id-nomen'] }}</td>
-                            <td>{{ nomenclaturesById[item['id-nomen']] }}</td>
+                        <tr v-for="item in currentDoc.production" :key="item['id-erp']">
+                            <td>{{ item['id-erp'] }}</td>
+                            <td>{{ nomenclaturesById[item['id-erp']] }}</td>
                             <td>{{ item.quant_plan }}</td>
                             <td>{{ item.quant_fact }}</td>
                         </tr>
