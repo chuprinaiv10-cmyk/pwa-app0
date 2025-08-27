@@ -19,7 +19,7 @@ const app = new Vue({
             { field: 'production_count', title: 'Произведено' },
             { field: 'date', title: 'Дата' }
         ], // Массив для хранения данных документов.
-        currentDoc: [], // Объект для хранения текущего документа.
+        currentDoc: null, // Объект для хранения текущего документа.
         table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
         apiProductionTasks: '', // URL для получения производственных задач.
         apiTaskCompletion: '', // URL для отправки данных о выполнении задач.
@@ -202,9 +202,9 @@ const app = new Vue({
             if (this.documents.length === 0) {
                  // Загружаем тестовые данные, если документ doc отсутствует
                 this.documents = [
-                    { id: 1, name: "Документ 1", date: "2023-01-15" },
-                    { id: 2, name: "Документ 2", date: "2023-02-20" },
-                    { id: 3, name: "Документ 3", date: "2023-03-10" },
+                    { "id-erp": "D001", "doc_type": "Приемка", "name": "Поступление от поставщика", "date": "2023-11-20", "consumption": [], "production": [{ "id-nomen": "N001", "quant_plan": 5, "quant_fact": 5 }] },
+                    { "id-erp": "D002", "doc_type": "Производство", "name": "Производство готовой продукции", "date": "2023-11-21", "consumption": [{ "id-nomen": "N002", "quant_plan": 10, "quant_fact": 8 }], "production": [{ "id-nomen": "N003", "quant_plan": 10, "quant_fact": 8 }] },
+                    { "id-erp": "D003", "doc_type": "Отгрузка", "name": "Отгрузка клиенту", "date": "2023-11-22", "consumption": [{ "id-nomen": "N004", "quant_plan": 15, "quant_fact": 15 }], "production": [] },
                 ];
             }
             //убрал загрузку табулатор
@@ -218,10 +218,24 @@ const app = new Vue({
          * @param {object} data - Данные выбранного документа.
          */
         editDocument(data) {
-            // Используем console.log вместо alert для неблокирующего вывода.
-            console.log(`Редактирование документа с ID: ${data.id}`);
+            // Присваиваем выбранный документ реактивному свойству currentDoc.
+            this.currentDoc = data;
+            console.log(`Редактирование документа с ID-ERP: ${this.currentDoc['id-erp']}`);
+            this.showView('docedit');
+            
         },
 
+        /**
+         * Обработчик клика по кнопке "создать операцию".
+         * @param {object} data - Данные выбранного документа.
+         */
+        createOperation () {
+            // Заглушка
+            console.log(`Нажата кнопка Создания операции`);
+            //this.showView('docedit');
+            
+        },
+        
         /**
          * Переключает текущий вид приложения.
          * @param {string} view - Название вида ('tasks', 'documents', 'settings', 'dictionarys').
