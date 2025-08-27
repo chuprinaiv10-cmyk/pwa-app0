@@ -20,6 +20,7 @@ const app = new Vue({
             { field: 'date', title: 'Дата' }
         ], // Массив для хранения данных документов.
         currentDoc: null, // Объект для хранения текущего документа.
+        nomenclatures: [], // Cвойство для хранения справочника номенклатуры.
         table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
         apiProductionTasks: '', // URL для получения производственных задач.
         apiTaskCompletion: '', // URL для отправки данных о выполнении задач.
@@ -59,6 +60,18 @@ const app = new Vue({
         }
     },
 
+    // Вычисляемые свойства.
+    computed: {
+        // Создаем вычисляемое свойство, которое преобразует массив номенклатур
+        // в объект для быстрого доступа по id-erp.
+        nomenclaturesById() {
+            return this.nomenclatures.reduce((acc, nomen) => {
+                acc[nomen['id-erp']] = nomen.name;
+                return acc;
+            }, {});
+        }
+    },
+
     // Хук жизненного цикла Vue. Вызывается после монтирования экземпляра.
     mounted() {
         this.$nextTick(() => {
@@ -79,6 +92,7 @@ const app = new Vue({
             if (newView === 'documents') {
                 //this.initTable();
                 this.loadData();
+                this.loadNomenclatures();
             } else if (newView === 'tasks') {
                 // Заглушка Инициализация таблицы задач при переключении на "Задачи"
                 //this.initTasksTable();
@@ -109,6 +123,7 @@ const app = new Vue({
                 // Запускаем инициализацию таблицы и загрузку данных для текущего вида.
                 //this.initTable(); // переносим в watch
                 await this.loadData();
+                await this.loadNomenclatures();
                 await this.loadSettings();
                 
                 // Устанавливаем вид по умолчанию.
@@ -211,6 +226,24 @@ const app = new Vue({
             //if (this.table) {
             //    this.table.replaceData(this.documents);
             //}
+        },
+
+        // Загрузка справочника номенклатуры
+        async loadNomenclatures() {
+            try {
+                this.nomenclatures = await localforage.getItem('nomen') || [];
+                 // Если справочник пуст, загружаем тестовые данные.
+                if (this.nomenclatures.length === 0) {
+                     this.nomenclatures = [
+                        { "id-erp": "N001", "name": "Тестовый товар 1" },
+                        { "id-erp": "N002", "name": "Тестовый товар 2" },
+                        { "id-erp": "N003", "name": "Тестовый товар 3" },
+                        { "id-erp": "N004", "name": "Тестовый товар 4" }
+                    ];
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки справочника номенклатуры:', error);
+            }
         },
         
         /**
@@ -329,6 +362,23 @@ const app = new Vue({
                 // Здесь будет ваша логика обработки штрих-кода
                 this.barcode = ''; // Очищаем поле после обработки
             }
+        },
+        // Метод для отображения всплывающего сообщения
+        showToast(message = this.toastMessage) {
+            this.toastMessage = message;
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    this.toastMessage = '';
+                }, 3000); // Сообщение исчезает через 3 секунды
+            }
+        },
+
+        // Метод для закрытия модального окна
+        closeModal() {
+            this.showModal = '';
         }
     }
 });
