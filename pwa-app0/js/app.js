@@ -11,7 +11,14 @@ const app = new Vue({
     data: {
         currentView: 'doclist', // Текущий активный вид приложения. Варианты: 'tasks', 'doclist', 'settings', 'dictionarys'.
         documents: [], // Массив для хранения данных документов.
-        docListColumns: [], // Массив для хранения заголовков документов.
+        docListColumns: [
+            { field: 'doc_type', title: 'Тип' },
+            { field: 'id-erp', title: 'ID-ERP' },
+            { field: 'name', title: 'Название' },
+            { field: 'consumption_count', title: 'Списано' },
+            { field: 'production_count', title: 'Произведено' },
+            { field: 'date', title: 'Дата' }
+        ], // Массив для хранения данных документов.
         currentDoc: [], // Объект для хранения текущего документа.
         table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
         apiProductionTasks: '', // URL для получения производственных задач.
