@@ -92,7 +92,7 @@ nav button:hover {
 #barcode-input:focus {
     outline: none; /* Убираем стандартную обводку */
     border-color: #ffc107; /* Жёлтая рамка при фокусе */
-    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
 }
 
 
@@ -145,4 +145,36 @@ h2 {
     #app {
         padding: 10px;
     }
+    .simple-table thead {
+                display: none;
+            }
+
+            .simple-table, .simple-table tbody, .simple-table tr, .simple-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .simple-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .simple-table td {
+                text-align: left;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .simple-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+                color: #555;
+            }
 }
