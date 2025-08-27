@@ -150,7 +150,9 @@
 
         <main>
             <!-- Блок для отображения всплывающих уведомлений -->
-            <div v-if="toastMessage" class="toast" :class="{ show: toastMessage }">{{ toastMessage }}</div>
+            <div id="toast" v-show="toastMessage">
+                {{ toastMessage }}
+            </div>
             
             <!-- Модальное окно -->
             <div v-if="showModal" class="modal" @click.self="showModal = false">
