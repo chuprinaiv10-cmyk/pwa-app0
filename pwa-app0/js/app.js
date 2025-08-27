@@ -66,6 +66,17 @@ const app = new Vue({
             if (newDictionary) {
                 this.loadDictionaryData(newDictionary);
             }
+        },
+        // Новое: Отслеживаем изменение текущего вида для инициализации таблиц
+        currentView(newView) {
+            if (newView === 'documents') {
+                //this.initTable();
+                this.loadData();
+            } else if (newView === 'tasks') {
+                // Заглушка Инициализация таблицы задач при переключении на "Задачи"
+                //this.initTasksTable();
+                //this.loadTasks();
+            }
         }
     },
 
