@@ -66,7 +66,7 @@ const app = new Vue({
         // в объект для быстрого доступа по id-erp.
         nomenclaturesById() {
             return this.nomenclatures.reduce((acc, nomen) => {
-                acc[nomen['id-erp']] = nomen.name;
+                acc[nomen['id']] = nomen.name;
                 return acc;
             }, {});
         }
