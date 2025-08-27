@@ -9,8 +9,10 @@ const app = new Vue({
     
     // Объект данных, который доступен всем компонентам Vue.
     data: {
-        currentView: 'tasks', // Текущий активный вид приложения. Варианты: 'tasks', 'documents', 'settings', 'dictionarys'.
+        currentView: 'doclist', // Текущий активный вид приложения. Варианты: 'tasks', 'doclist', 'settings', 'dictionarys'.
         documents: [], // Массив для хранения данных документов.
+        docListColumns: [], // Массив для хранения заголовков документов.
+        currentDoc: [], // Объект для хранения текущего документа.
         table: null, // Ссылка на экземпляр Tabulator для управления таблицей.
         apiProductionTasks: '', // URL для получения производственных задач.
         apiTaskCompletion: '', // URL для отправки данных о выполнении задач.
@@ -21,7 +23,7 @@ const app = new Vue({
         message: '', // Сообщение для пользователя.
         toastMessage: '', // Всплывающие сообщения
         showModal: '', // Модальные сообщения
-        currentDictionary: null, // Текущий выбранный справочник ('nomen', 'stor', 'users').
+        currentDictionary: 'nomen', //null, // Текущий выбранный справочник ('nomen', 'stor', 'users').
         dictionaryData: [], // Массив для хранения данных текущего справочника.
         // Заголовки для справочников для отображения в интерфейсе
         dictionaryTitles: {
@@ -87,12 +89,12 @@ const app = new Vue({
                 }
                 
                 // Запускаем инициализацию таблицы и загрузку данных для текущего вида.
-                this.initTable();
+                //this.initTable(); // переносим в watch
                 await this.loadData();
                 await this.loadSettings();
                 
                 // Устанавливаем вид по умолчанию.
-                this.showView('tasks');
+                this.showView('doclist');
                 this.message = 'Готово.';
             } catch (error) {
                 this.message = `Ошибка инициализации: ${error.message}`;
@@ -175,7 +177,7 @@ const app = new Vue({
         },
 
         /**
-         * Загружает данные документов из LocalForage и обновляет таблицу.
+         * Загружает данные документов doc из LocalForage и обновляет таблицу.
          */
         async loadData() {
             this.documents = await localforage.getItem('doc') || [];
@@ -187,9 +189,10 @@ const app = new Vue({
                     { id: 3, name: "Документ 3", date: "2023-03-10" },
                 ];
             }
-            if (this.table) {
-                this.table.replaceData(this.documents);
-            }
+            //убрал загрузку табулатор
+            //if (this.table) {
+            //    this.table.replaceData(this.documents);
+            //}
         },
         
         /**
