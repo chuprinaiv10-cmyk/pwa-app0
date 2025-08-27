@@ -85,7 +85,7 @@
         }
         
         /* Стили для всплывающих уведомлений (toast) */
-        .toast {
+        #toast {
             position: fixed;
             top: 20px;
             left: 50%;
@@ -99,8 +99,29 @@
             transition: opacity 0.5s ease-in-out;
         }
 
-        .toast.show {
+        #toast.show {
             opacity: 1;
+        }
+        
+        /* Анимация всплывающего уведомления */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
         }
 
         /* Стили для модальных окон */
