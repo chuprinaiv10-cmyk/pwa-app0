@@ -44,10 +44,24 @@
             <div v-if="showModal" class="modal" @click.self="showModal = false">
                 <div class="modal-content">
                     <p>{{ modalMessage }}</p>
+
+                    <!-- Динамическая форма -->
+                    <div v-if="modalForm.length > 0" class="form-container">
+                        <div v-for="field in modalForm" :key="field.name" class="form-group">
+                            <label :for="field.name">{{ field.label }}:</label>
+                            <input 
+                                :type="field.type" 
+                                :id="field.name" 
+                                v-model="modalFormData[field.name]"
+                                :placeholder="field.placeholder || ''"
+                            >
+                        </div>
+                    </div>
+
                     <div class="modal-buttons">
                         <button v-if="modalType === 'confirm'" @click="modalCallback(true)">Да</button>
                         <button v-if="modalType === 'confirm'" @click="modalCallback(false)">Нет</button>
-                        <button v-else @click="modalCallback(true)">ОК</button>
+                        <button v-else @click="modalCallback(modalFormData)">ОК</button>
                     </div>
                 </div>
             </div>
