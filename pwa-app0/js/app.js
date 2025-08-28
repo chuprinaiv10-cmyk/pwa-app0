@@ -30,7 +30,12 @@ const app = new Vue({
         loading: false, // Флаг для отображения индикатора загрузки.
         message: '', // Сообщение для пользователя.
         toastMessage: '', // Всплывающие сообщения
-        showModal: '', // Модальные сообщения
+        showModal: false, // Изменим на boolean
+        modalMessage: '',
+        modalType: '',
+        modalCallback: null,
+        modalForm: [], // Новый массив для хранения полей формы
+        modalFormData: {} // Новый объект для хранения введенных данных
         currentDictionary: 'nomen', //null, // Текущий выбранный справочник ('nomen', 'stor', 'users').
         dictionaryData: [], // Массив для хранения данных текущего справочника.
         // Заголовки для справочников для отображения в интерфейсе
@@ -266,8 +271,25 @@ const app = new Vue({
             // Заглушка
             console.log(`Нажата кнопка Создания операции`);
             //this.showView('docedit');
-            this.showToast('Создание операции');
-            
+            //this.showToast('Создание операции');
+            const formFields = [
+                { name: 'nomen_id', label: 'ID Номенклатуры', type: 'text' },
+                { name: 'quantity', label: 'Количество', type: 'number', value: 1 },
+                { name: 'operation_type', label: 'Тип операции', type: 'select', options: ['production', 'consumption'] }
+            ];
+
+            this.showModalWithForm(
+                'Введите данные для новой операции:',
+                'prompt',
+                formFields,
+                (data) => {
+                if (data) {
+                    console.log('Данные формы:', data);
+                    // Здесь будет ваша логика обработки данных формы
+                }
+                this.showModal = false;
+                }
+            );
         },
         
         /**
@@ -375,6 +397,25 @@ const app = new Vue({
                     this.toastMessage = '';
                 }, 3000); // Сообщение исчезает через 3 секунды
             }
+        },
+        /**
+         * Отображает модальное окно с формой.
+         * @param {string} message Сообщение для модального окна.
+         * @param {string} type Тип модального окна ('prompt' или 'confirm').
+         * @param {Array<Object>} formFields Массив объектов полей формы.
+         * @param {function} callback Колбэк-функция, которая будет вызвана при закрытии.
+        */
+        showModalWithForm(message, type, formFields, callback) {
+            this.modalMessage = message;
+            this.modalType = type;
+            this.modalForm = formFields;
+            this.modalFormData = {}; // Очищаем данные формы
+            // Заполняем modalFormData значениями по умолчанию
+            this.modalForm.forEach(field => {
+                this.$set(this.modalFormData, field.name, field.value || null);
+            });
+            this.modalCallback = callback;
+            this.showModal = true;
         },
 
         // Метод для закрытия модального окна
