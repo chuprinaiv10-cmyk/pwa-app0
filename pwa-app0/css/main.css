@@ -128,72 +128,67 @@ h2 {
             color: #4a90e2;
             font-weight: bold;
         }
+/* Стили для всплывающих уведомлений (toast) */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-/*
- * Медиазапрос для узких экранов (например, мобильных устройств).
- * Когда ширина экрана меньше или равна 600px.
- */
-@media (max-width: 600px) {
-    header {
-        /* Меняем направление flexbox, чтобы элементы располагались вертикально */
-        flex-direction: column;
-        /* Выравниваем все элементы по левому краю */
-        align-items: flex-start;
-        padding: 1rem;
-    }
-    header h1 {
-        /* Уменьшаем размер заголовка на мобильных устройствах */
-        font-size: 1.4rem;
-        margin-bottom: 10px; /* Добавляем отступ */
-    }
-    #barcode-input {
-        width: 100%;
-        margin: 10px 0;
-    }
-    nav {
-        /* Убираем отступ, чтобы кнопки были ближе к заголовку */
-        margin-left: 0;
-        /* Выравниваем кнопки по левому краю на мобильных устройствах */
-        justify-content: flex-start;
-        width: 100%; /* Занимаем всю доступную ширину */
-    }
-    nav button {
-        /* Добавляем отступы между кнопками на мобильных устройствах */
-        margin: 5px 15px 5px 0;
-    }
-    #app {
-        padding: 10px;
-    }
-    .simple-table thead {
-                display: none;
-            }
+        #toast.show {
+            opacity: 1;
+        }
+        
+        /* Анимация всплывающего уведомления */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
 
-            .simple-table, .simple-table tbody, .simple-table tr, .simple-table td {
-                display: block;
-                width: 100%;
-            }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
 
-            .simple-table tr {
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
 
-            .simple-table td {
-                text-align: left;
-                padding-left: 50%;
-                position: relative;
-            }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
 
-            .simple-table td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 15px;
-                font-weight: bold;
-                text-align: left;
-                color: #555;
-            }
-}
+        /* Стили для модальных окон */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+/* Медиа стили для узких экранов убраны для тестирования */
