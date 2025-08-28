@@ -10,7 +10,74 @@
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
         /* заглушка, все стили перенесены в css/main.css*/      
+        /* Стили для модальных окон */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-buttons {
+            margin-top: 15px;
+            text-align: right;
+        }
+        .modal-buttons button {
+            margin-left: 10px;
+        }
         
+        /* Стили для формы в модальном окне */
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Общие стили для простых таблиц */
+        .simple-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .simple-table th, .simple-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .simple-table th {
+            background-color: #f4f4f9;
+            color: #4a90e2;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -41,10 +108,10 @@
             </div>
             
             <!-- Модальное окно -->
-            <div v-if="showModal" class="modal" @click.self="showModal = false">
+            <div v-if="showModal" class="modal" @click.self="closeModal">
                 <div class="modal-content">
                     <p>{{ modalMessage }}</p>
-
+                    
                     <!-- Динамическая форма -->
                     <div v-if="modalForm.length > 0" class="form-container">
                         <div v-for="field in modalForm" :key="field.name" class="form-group">

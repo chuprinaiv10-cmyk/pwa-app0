@@ -266,16 +266,11 @@ const app = new Vue({
         /**
          * Обработчик клика по кнопке "создать операцию".
          * @param {object} data - Данные выбранного документа.
+         * this.showToast('Создание операции');
          */
-        createOperation () {
-            // Заглушка
-            console.log(`Нажата кнопка Создания операции`);
-            //this.showView('docedit');
-            //this.showToast('Создание операции');
-            const formFields = [
+        const formFields = [
                 { name: 'nomen_id', label: 'ID Номенклатуры', type: 'text' },
-                { name: 'quantity', label: 'Количество', type: 'number', value: 1 },
-                { name: 'operation_type', label: 'Тип операции', type: 'select', options: ['production', 'consumption'] }
+                { name: 'quantity', label: 'Количество', type: 'number', value: 1 }
             ];
 
             this.showModalWithForm(
@@ -283,11 +278,11 @@ const app = new Vue({
                 'prompt',
                 formFields,
                 (data) => {
-                if (data) {
-                    console.log('Данные формы:', data);
-                    // Здесь будет ваша логика обработки данных формы
-                }
-                this.showModal = false;
+                    if (data) {
+                        console.log('Данные формы:', data);
+                        // Здесь будет ваша логика обработки данных формы
+                    }
+                    this.closeModal();
                 }
             );
         },
@@ -420,7 +415,7 @@ const app = new Vue({
 
         // Метод для закрытия модального окна
         closeModal() {
-            this.showModal = '';
+            this.showModal = false;
         }
     }
 });
